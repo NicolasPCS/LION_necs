@@ -3,7 +3,7 @@ if [ -z "$1" ]
     echo "Require NGPU input; "
     exit
 fi
-DATA=" ddpm.input_dim 3 data.cates car "
+DATA=" ddpm.input_dim 3 data.cates airplane "
 NGPU=$1 # 
 num_node=1
 BS=32 

@@ -11,7 +11,7 @@ import os
 def get_path(dataname=None):
     dataset_path = {}
     dataset_path['pointflow'] = [
-        './data/ShapeNetCore.v2.PC15k/'
+        './data/ShapeNetCore.v2.PC15k/'  # ShapeNet dataset
 
     ]
     dataset_path['clip_forge_image'] = [
@@ -19,6 +19,7 @@ def get_path(dataname=None):
             ]
 
     if dataname is None:
+        print ("-----------------------", dataset_path)
         return dataset_path
     else:
         assert(
@@ -27,7 +28,7 @@ def get_path(dataname=None):
             print(f'searching: {dataname}, get: {p}')
             if os.path.exists(p):
                 return p
-        ValueError(
+        raise ValueError(
             f'all path not found for {dataname}, please double check: {dataset_path[dataname]}; or edit the datasets/data_path.py ')
 
 
@@ -37,5 +38,5 @@ def get_cache_path():
     for p in cache_list:
         if os.path.exists(p):
             return p
-    ValueError(
+    raise ValueError(
         f'all path not found for {cache_list}, please double check: or edit the datasets/data_path.py ')

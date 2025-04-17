@@ -9,6 +9,6 @@ __pycache__/
 *__pycache__*
 models/pvcnn/functional/build/
 *.sh
-lion_ckpt
-data/
+lion_ckpt/*
+data/ShapeNetCore.v2.PC15k/
 datasets/test_data
