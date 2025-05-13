@@ -25,8 +25,8 @@ OVERFIT = 0
 # 8e8f29f8124ed5fc59439e8551ba7ef7567c9a37/src/in_out.py
 synsetid_to_cate = {
     '02691156': 'airplane',
-    #'03001627': 'chair',
-    #'02958343': 'car',
+    '03001627': 'chair',
+    '02958343': 'car',
     #'02773838': 'bag',
     #'02801938': 'basket',
     #'02808440': 'bathtub',

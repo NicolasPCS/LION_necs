@@ -12,10 +12,10 @@ lr=2e-4
 ENT="python train_dist.py --num_process_per_node $NGPU "
 train_vae=False
 cmt="lion"
-ckpt="./lion_ckpt/unconditional/car/checkpoints/vae_only.pt"
+ckpt="./lion_ckpt/unconditional/airplane/checkpoints/vae_only.pt"
 
 $ENT \
-    --config "./lion_ckpt/unconditional/car/cfg.yml" \
+    --config "./lion_ckpt/unconditional/airplane/cfg.yml" \
     latent_pts.pvd_mse_loss 1 \
     vis_latent_point 1 \
     num_val_samples 24 \

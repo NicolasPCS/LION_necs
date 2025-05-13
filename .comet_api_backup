@@ -1,0 +1,4 @@
+{
+  "api_key": "offline",
+  "offline_directory": "./comet_offline"
+}

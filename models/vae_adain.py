@@ -13,7 +13,7 @@ import torch.nn as nn
 from .distributions import Normal
 from utils.model_helper import import_model 
 from utils.model_helper import loss_fn
-from utils import utils as helper 
+from utils import utils as helper
 
 class Model(nn.Module):
     def __init__(self, args):

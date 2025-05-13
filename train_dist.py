@@ -56,7 +56,7 @@ def main(args, config):
                 config.save_dir, config.bash_name.split('/')[-1]))
     ckpt_dir = os.path.join(config.save_dir, 'checkpoints')
     snapshot_file = os.path.join(config.save_dir, 'checkpoints', 'snapshot')
-
+    print(f"THE CHECKPOINT DIRECTORY IS  {ckpt_dir}")
     # -- check if prev saved ckpt exist -- #
     if os.path.exists(ckpt_dir) and os.path.exists(snapshot_file):
         logger.info(
