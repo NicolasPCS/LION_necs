@@ -1533,3 +1533,11 @@ def infer_active_variables(train_queue, vae, args, device, distributed, max_iter
                 kl_meter.update(kl_diag[0], 1)  # only the top scale
     average_tensor(kl_meter.avg, distributed)
     return kl_meter.avg > 0.1
+
+# Added Javier
+# Mide la simetría de las nubes latentes
+# Toma todos los puntos del vector y lo refleja 
+def mirror_latent(latent, dim=0): # dim=0
+    mirrored_latent = latent.clone()
+    mirrored_latent[:,:, dim] *= -1 # Negate the x-coordinate
+    return mirrored_latent

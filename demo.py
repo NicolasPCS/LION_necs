@@ -26,7 +26,7 @@ lion = LION(config)
 lion.load_model(model_path)
 
 if config.clipforge.enable:
-    input_t = ["a swivel chair, five wheels"] 
+    input_t = ["a swivel chair, five wheels"]
     device_str = 'cuda'
     clip_model, clip_preprocess = clip.load(
                         config.clipforge.clip_model, device=device_str)    

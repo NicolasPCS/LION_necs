@@ -10,3 +10,7 @@ Dataset  	Model              	reported               	  MMD-CDx0.001↓	  MMD-EM
 car      	fbb941hs1Hedbb5diet	S164kE11.0k-ref_val_car	         0.9312	         0.7632	     49.15	      54.26	       58.66	        53.55	  0.01
 Dataset  	Model                	reported                	  MMD-CDx0.001↓	  MMD-EMDx0.01↓	  COV-CD%↑	  COV-EMD%↑	  1-NNA-CD%↓	  1-NNA-EMD%↓	  JSD↓	url
 chair    	afc967hs100Hedbb5diet	S111kE4.0k-ref_val_chair	         2.6713	         1.5652	     46.37	      51.21	        57.1	        54.46	  0.02
+Dataset  	Model                   	reported                   	  MMD-CDx0.001↓	  MMD-EMDx0.01↓	  COV-CD%↑	  COV-EMD%↑	  1-NNA-CD%↓	  1-NNA-EMD%↓	  JSD↓	url
+airplane 	f58723hnoemas1H993a4diet	S159kE8.0k-ref_val_airplane	         2.9496	         1.8093	      3.46	       4.94	         100	          100	  0.51
+Dataset  	Model              	reported                    	  MMD-CDx0.001↓	  MMD-EMDx0.01↓	  COV-CD%↑	  COV-EMD%↑	  1-NNA-CD%↓	  1-NNA-EMD%↓	  JSD↓	url
+airplane 	f52042hs1H993a4diet	S575kE18.0k-ref_val_airplane	         0.2316	         0.3649	     46.67	       52.1	       71.48	        60.25	  0.05

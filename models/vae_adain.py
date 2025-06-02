@@ -201,8 +201,13 @@ class Model(nn.Module):
             else:
                 latent_pts = z_local.view(*latent_shape)[:,:,:self.input_dim].contiguous().clone()
 
-            output['vis/latent_pts'] = latent_pts.detach().cpu().view(batch_size,
-                    -1, self.input_dim) # B,N,3
+            # Conserva latente para simetría (¡con gradientes!)
+            output['latent_pts'] = latent_pts
+
+            # Versión para visualización (sin gradientes)
+            output['vis/latent_pts'] = latent_pts.detach().cpu().view(batch_size, -1, self.input_dim)
+
+            #output['vis/latent_pts'] = latent_pts.detach().cpu().view(batch_size, -1, self.input_dim) # B,N,3
         output['final_pred'] = output['x_0_pred'] 
         return output 
 
@@ -289,7 +294,32 @@ class Model(nn.Module):
             kl = kl_weight * sum(weighted_kl_terms) 
         else:
             kl = kl_weight * sum(kl_term_list) 
-        loss = kl + loss_recons * self.args.weight_recont 
+        #loss = kl + loss_recons * self.args.weight_recont # Original
+
+        # Symmetry loss - Javier
+        #with torch.no_grad():
+        # Get the latent representation of x
+        lp_representation = self.get_latent_points(x)
+        #lp_representation = output['latent_pts']
+
+        # Added by Nicolás
+        # Center
+        #centered_latent = lp_representation - lp_representation.mean(dim=1, keepdim=True)
+
+        # Mirror against YZ plane
+        mirrored_latent = helper.mirror_latent(lp_representation) # centered_latent
+
+        # Use chamfer distance loss function
+        sym_loss = loss_fn(lp_representation, mirrored_latent, 'chamfer', self.input_dim, batch_size).mean()
+        print("lp_rep shape", lp_representation.shape)
+        print(f'[LOSS] symmetry_loss: {sym_loss.item():.6f}')
+
+        # Se suma porque se quiere maximizar la ELBO negativa (en teoria se minimiza el ELBO)
+        loss = kl + loss_recons * self.args.weight_recont + sym_loss # (*) 5 # + symmetry_loss * (weight to be decided) --> 1
+        # Print out KL, recont Loss and simmetry loss to decide weight
+        #print(f'[LOSS FUNCTIONS] kl_divergence: {kl}, recon_loss: {loss_recons * self.args.weight_recont}, symetry_loss: {sym_loss * 1000}')
+        print(f'[LOSS FUNCTIONS] kl_divergence: {kl}, recon_loss: {loss_recons * self.args.weight_recont}, symetry_loss: {sym_loss}')
+
         output['msg/kl'] = kl 
         output['msg/rec'] = loss_recons
         output['loss'] = loss 
@@ -337,3 +367,69 @@ class Model(nn.Module):
             [self.args.latent_pts.style_dim, 1, 1],
             [self.num_points*(self.latent_dim+self.input_dim),1,1]
             ]
+
+    # Pasar un objeto x por el encoder - no pasa por el decoder
+    # Genera una nube latente de puntos 3D
+    def get_latent_points(self, x, target=None, class_label=None, cls_emb=None):
+        batch_size, N, point_dim = x.size()
+        assert(x.shape[2] == self.input_dim), f'expect input in ' \
+                                              f'[B,Npoint, PointDim={self.input_dim}], get: {x.shape}'
+        x_0_target = x if target is None else target
+
+        latent_list = []
+        all_eps = []
+        all_log_q = []
+
+        # --- Global style encoder ---
+        if self.args.data.cond_on_cat:
+            if class_label is not None:
+                assert(class_label is not None)
+                cls_emb = self.class_embedding(class_label)
+            else:
+                assert(cls_emb is not None)
+
+            enc_input = x, cls_emb
+        else:
+            enc_input = x
+        
+        z = self.style_encoder(enc_input)
+        z_mu, z_sigma = z['mu_1d'], z['sigma_1d'] # log_sigma
+        dist = Normal(mu=z_mu, log_sigma=z_sigma)  # (B, F)
+
+        z_global = dist.sample()[0]
+        all_eps.append(z_global)
+        all_log_q.append(dist.log_p(z_global))
+        latent_list.append([z_global, z_mu, z_sigma])
+
+        # --- Original encoder ---
+        style = torch.cat([z_global, cls_emb], dim=1) if self.args.data.cond_on_cat else z_global 
+        style = self.style_mlp(style) if self.style_mlp is not None else style  
+        z = self.encoder([x, style])
+        z_mu, z_sigma = z['mu_1d'], z['sigma_1d'] # log_sigma
+        z_sigma = z_sigma - self.args.shapelatent.log_sigma_offset 
+        dist = Normal(mu=z_mu, log_sigma=z_sigma)  # (B, F)
+        z_local = dist.sample()[0] 
+        all_eps.append(z_local) 
+        all_log_q.append(dist.log_p(z_local)) 
+        latent_list.append( [z_local, z_mu, z_sigma] )
+
+        # 
+        make_4d = lambda x: x.unsqueeze(-1).unsqueeze(-1) if len(x.shape) == 2 else x.unsqueeze(-1) 
+        all_eps = [make_4d(e) for e in all_eps]
+        all_log_q = [make_4d(e) for e in all_log_q]
+
+        # Hacer transformaciones
+        if 'LatentPoint' in self.args.shapelatent.decoder_type: 
+            latent_shape = [batch_size, -1, self.latent_dim + self.input_dim] 
+            if 'Hir' in self.args.shapelatent.decoder_type:
+                latent_pts = z_local[:,:-self.args.latent_pts.latent_dim_ext[0]].view(*latent_shape)[:,:,:3].contiguous().clone()
+            else:
+                latent_pts = z_local.view(*latent_shape)[:,:,:self.input_dim].contiguous().clone()
+        
+        print("This is from Latent Points",  latent_pts.shape)
+
+        # If shape = [B, N, 3], uncomment the following line, else not
+
+        #latent_pts.detach().cpu().view(batch_size,-1, self.input_dim) # B,N,3
+       
+        return latent_pts

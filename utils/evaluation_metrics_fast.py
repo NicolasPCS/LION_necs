@@ -105,7 +105,7 @@ def distChamferCUDA(x, y):
     CHECK3D(y)
     # assert (x.shape[-1] == 3
     #        and y.shape[-1] == 3), f'get {x.shape} and {y.shape}'
-    dist1, dist2, _, _ = chamfer_3DDist()(x.cuda(), y.cuda())
+    dist1, dist2, _, _ = chamfer_3DDist()(x, y) # (x.cuda(), y.cuda())
     return dist1, dist2
 
 

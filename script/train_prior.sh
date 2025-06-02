@@ -12,13 +12,20 @@ lr=2e-4
 ENT="python train_dist.py --num_process_per_node $NGPU "
 train_vae=False
 cmt="lion"
-ckpt="./lion_ckpt/unconditional/airplane/checkpoints/vae_only.pt"
+#ckpt="./lion_ckpt/unconditional/airplane/checkpoints/vae_only.pt"
+ckpt="/home/ncaytuir/data-local/exp/0513_1stVAE_0/airplane/28c7bch_hvae_lion_B16/checkpoints/epoch_7999_iters_159999.pt"
+#--config "./lion_ckpt/unconditional/airplane/cfg.yml" \
+
+# Added by Nicolás
+# --config
+# ddpm.num_steps 1000
 
 $ENT \
-    --config "./lion_ckpt/unconditional/airplane/cfg.yml" \
+    --config "/home/ncaytuir/data-local/exp/0513_1stVAE_0/airplane/28c7bch_hvae_lion_B16/cfg.yml" \
     latent_pts.pvd_mse_loss 1 \
     vis_latent_point 1 \
     num_val_samples 24 \
+    ddpm.num_steps 1000 \
     ddpm.ema 1 \
     ddpm.use_bn False ddpm.use_gn True \
     ddpm.time_dim 64 \

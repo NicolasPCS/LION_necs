@@ -47,8 +47,16 @@ def loss_fn(predv, targetv, loss_type, point_dim, batch_size, loss_weight_emd=0.
         output['print/rec_cd1_sum'] = loss
 
     elif loss_type == 'chamfer':
+
+        # Added by Nicolás
+        if not predv.is_cuda:
+            predv = predv.cuda()
+        if not targetv.is_cuda:
+            targetv = targetv.cuda()
+
         dl, dr = distChamferCUDA(predv, targetv)
         loss = dl.view(B, -1).mean(-1) + dr.view(B, -1).mean(-1)
+        print("Se llamo a chamfer, perdida igual = ", loss)
         output['print/rec_cd'] = loss
 
     elif loss_type == 'mse_sum':
