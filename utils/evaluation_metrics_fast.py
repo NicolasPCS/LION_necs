@@ -272,7 +272,7 @@ def print_results(results, dataset='-', hash='-', step='', epoch=''):
 def _pairwise_EMD_CD_sub(metric, sample_batch, ref_pcs, N_ref, batch_size, accelerated_cd, verbose, require_grad):
     cd_lst = []
     emd_lst = []
-    sub_iterator = range(0, N_ref, batch_size)
+    sub_iterator = range(0, N_ref, batch_size) # (0, 405, 202) = (0, 202)
     total_iter = int(N_ref / float(batch_size) + 0.5)
     # if verbose:
     #    import tqdm
@@ -294,13 +294,21 @@ def _pairwise_EMD_CD_sub(metric, sample_batch, ref_pcs, N_ref, batch_size, accel
             if accelerated_cd and not require_grad:
                 dl, dr = distChamferCUDAnograd(sample_batch_exp, ref_batch)
             elif accelerated_cd:
+                """
+                dl = Tensor. Para cada punto de la nube generada, la distancia al punto
+                más cercano en la nube de referencia.
+                dr = Tensor. Para cada punto de la nube de referencia, la distancia al
+                punto más cercano en la nube generada.
+                """
                 dl, dr = distChamferCUDA(sample_batch_exp, ref_batch)
             else:
                 dl, dr = distChamfer(sample_batch_exp, ref_batch)
             # print('cuda: {:.5f}'.format(time.time() - t00))
             #t00 = time.time()
-            cd_lst.append(((dl.mean(dim=1) + dr.mean(dim=1)).view(1, -1))
-                          )
+            """
+            Esto es el calculo de la distancia de chamfer.
+            """
+            cd_lst.append(((dl.mean(dim=1) + dr.mean(dim=1)).view(1, -1)))
         elif metric == 'EMD':
             emd_batch = emd_approx(
                 sample_batch_exp, ref_batch, require_grad=require_grad)
@@ -310,7 +318,7 @@ def _pairwise_EMD_CD_sub(metric, sample_batch, ref_pcs, N_ref, batch_size, accel
         # torch.cuda.empty_cache()
         # print('approx: {:.5f}'.format(time.time() - t00))
     if metric == 'CD':
-        cd_lst = torch.cat(cd_lst, dim=1)
+        cd_lst = torch.cat(cd_lst, dim=1) # Une todos los tensores
         return cd_lst, cd_lst
     else:
         emd_lst = torch.cat(emd_lst, dim=1)

@@ -228,10 +228,18 @@ def compute_score(output_name, ref_name, batch_size_test=256, device_str='cuda',
     """
     logger.info('[compute sample metric] sample: {} and ref: {}',
                 output_name, ref_name)
-    ref = torch.load(ref_name)
+    ref = torch.load(ref_name) # Loads the tensor
+
+    print(f"[DEBUG] ref type: {type(ref)}")
+    #print(f"[DEBUG] ref keys: {ref.keys() if isinstance(ref, dict) else 'no keys'}")
+
+    if not isinstance(ref, dict) or 'ref' not in ref or 'mean' not in ref or 'std' not in ref:
+        raise ValueError("El archivo cargado no contiene un diccionario válido con claves 'ref', 'mean' y 'std'")
+    
     ref_pcs = ref['ref'][:, :, :3]
     m_pcs, s_pcs = ref['mean'], ref['std']
     gen_pcs = torch.load(output_name)
+    #gen_pcs = gen_pcs['ref'] # Added by Nicolás : Comment when generate samples
     if gen_pcs.shape[1] > ref_pcs.shape[1]:
         xperm = np.random.permutation(np.arange(gen_pcs.shape[1]))[
             :ref_pcs.shape[1]]
@@ -247,8 +255,8 @@ def compute_score(output_name, ref_name, batch_size_test=256, device_str='cuda',
     logger.info('[data shape] ref_pcs: {}, gen_pcs: {}, mean={}, std={}; norm_box={}',
                 ref_pcs.shape, gen_pcs.shape, m_pcs.shape, s_pcs.shape, norm_box)
     N_ref = ref_pcs.shape[0]  # subset it
-    m_pcs = m_pcs[:N_ref]
-    s_pcs = s_pcs[:N_ref]
+    m_pcs = m_pcs[:N_ref] # Mean
+    s_pcs = s_pcs[:N_ref] # STD
     ref_pcs = ref_pcs[:N_ref]
     gen_pcs = gen_pcs[:N_ref]
     if gen_pcs.shape[2] == 6:  # B,N,3 or 6

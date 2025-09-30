@@ -202,12 +202,12 @@ class Model(nn.Module):
                 latent_pts = z_local.view(*latent_shape)[:,:,:self.input_dim].contiguous().clone()
 
             # Conserva latente para simetría (¡con gradientes!)
-            output['latent_pts'] = latent_pts
+            #output['latent_pts'] = latent_pts
 
             # Versión para visualización (sin gradientes)
-            output['vis/latent_pts'] = latent_pts.detach().cpu().view(batch_size, -1, self.input_dim)
+            #output['vis/latent_pts'] = latent_pts.detach().cpu().view(batch_size, -1, self.input_dim)
 
-            #output['vis/latent_pts'] = latent_pts.detach().cpu().view(batch_size, -1, self.input_dim) # B,N,3
+            output['vis/latent_pts'] = latent_pts.detach().cpu().view(batch_size, -1, self.input_dim) # B,N,3
         output['final_pred'] = output['x_0_pred'] 
         return output 
 
@@ -294,12 +294,12 @@ class Model(nn.Module):
             kl = kl_weight * sum(weighted_kl_terms) 
         else:
             kl = kl_weight * sum(kl_term_list) 
-        #loss = kl + loss_recons * self.args.weight_recont # Original
+        loss = kl + loss_recons * self.args.weight_recont # Original
 
         # Symmetry loss - Javier
         #with torch.no_grad():
         # Get the latent representation of x
-        lp_representation = self.get_latent_points(x)
+        ## lp_representation = self.get_latent_points(x)
         #lp_representation = output['latent_pts']
 
         # Added by Nicolás
@@ -307,18 +307,18 @@ class Model(nn.Module):
         #centered_latent = lp_representation - lp_representation.mean(dim=1, keepdim=True)
 
         # Mirror against YZ plane
-        mirrored_latent = helper.mirror_latent(lp_representation) # centered_latent
+        ## mirrored_latent = helper.mirror_latent(lp_representation) # centered_latent
 
         # Use chamfer distance loss function
-        sym_loss = loss_fn(lp_representation, mirrored_latent, 'chamfer', self.input_dim, batch_size).mean()
-        print("lp_rep shape", lp_representation.shape)
-        print(f'[LOSS] symmetry_loss: {sym_loss.item():.6f}')
+        ## sym_loss = loss_fn(lp_representation, mirrored_latent, 'chamfer', self.input_dim, batch_size).mean()
+        ## print("lp_rep shape", lp_representation.shape)
+        ## print(f'[LOSS] symmetry_loss: {sym_loss.item():.6f}')
 
         # Se suma porque se quiere maximizar la ELBO negativa (en teoria se minimiza el ELBO)
-        loss = kl + loss_recons * self.args.weight_recont + sym_loss # (*) 5 # + symmetry_loss * (weight to be decided) --> 1
+        ## loss = kl + loss_recons * self.args.weight_recont + sym_loss # (*) 5 # + symmetry_loss * (weight to be decided) --> 1
         # Print out KL, recont Loss and simmetry loss to decide weight
         #print(f'[LOSS FUNCTIONS] kl_divergence: {kl}, recon_loss: {loss_recons * self.args.weight_recont}, symetry_loss: {sym_loss * 1000}')
-        print(f'[LOSS FUNCTIONS] kl_divergence: {kl}, recon_loss: {loss_recons * self.args.weight_recont}, symetry_loss: {sym_loss}')
+        ## print(f'[LOSS FUNCTIONS] kl_divergence: {kl}, recon_loss: {loss_recons * self.args.weight_recont}, symetry_loss: {sym_loss}')
 
         output['msg/kl'] = kl 
         output['msg/rec'] = loss_recons
