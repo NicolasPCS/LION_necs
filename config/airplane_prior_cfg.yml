@@ -13,7 +13,7 @@ data:
   clip_model: ViT-B/32
   cond_on_cat: 0
   cond_on_voxel: 0
-  data_dir: data/ShapeNetCore.v2.PC15k
+  data_dir: "/home/ncaytuir/data-local/PVD_necs/ShapeNetCore.v6.PC15k" # "data/ShapeNetCore.v2.PC15k" 
   dataset_scale: 1
   dataset_type: shapenet15k
   eval_test_split: 0

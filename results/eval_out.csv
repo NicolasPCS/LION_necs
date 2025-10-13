@@ -1,0 +1,2 @@
+Dataset  	Model              	reported                   	  MMD-CDx0.001↓	  MMD-EMDx0.01↓	  COV-CD%↑	  COV-EMD%↑	  1-NNA-CD%↓	  1-NNA-EMD%↓	  JSD↓	url
+airplane 	c80834hs1H47de2diet	S563kE6.0k-ref_val_airplane	         3.2815	         0.9349	      7.16	      26.67	         100	        99.63	  0.32

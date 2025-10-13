@@ -13,6 +13,7 @@ from utils.model_helper import import_model
 from diffusers import DDPMScheduler
 import torch
 from matplotlib import pyplot as plt
+import numpy as np
 
 class LION(object):
     def __init__(self, cfg):

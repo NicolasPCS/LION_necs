@@ -163,6 +163,7 @@ def get_args():
     # update config
     if args.eval_generation or args.resume:
         logger.info('[pretrained]: {}', args.pretrained)
+        print(args.pretrained)
         args.config = os.path.dirname(args.pretrained) + '/../cfg.yml'
         config.merge_from_file(args.config)
     elif args.config != 'none':
