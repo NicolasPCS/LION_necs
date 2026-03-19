@@ -130,7 +130,7 @@ class Model(nn.Module):
         z_local = dist.sample()[0] 
         all_eps.append(z_local) 
         all_log_q.append(dist.log_p(z_local)) 
-        latent_list.append( [z_local, z_mu, z_sigma] )
+        #latent_list.append( [z_local, z_mu, z_sigma] )
         all_eps = self.compose_eps(all_eps) 
         
         return latent_list
