@@ -11,7 +11,7 @@ import torch
 import torch.nn as nn
 import numpy as np
 from loguru import logger
-from utils.data_helper import normalize_point_clouds 
+from utils.data_helper import normalize_point_clouds
 from utils.vis_helper import visualize_point_clouds_3d
 from utils import model_helper, exp_helper, data_helper 
 from utils.diffusion_pvd import DiffusionDiscretized

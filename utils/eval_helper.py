@@ -238,6 +238,8 @@ def compute_score(output_name, ref_name, batch_size_test=256, device_str='cuda',
     
     ref_pcs = ref['ref'][:, :, :3]
     m_pcs, s_pcs = ref['mean'], ref['std']
+    print("Mean", m_pcs)
+    print("Standard deviation", s_pcs)
     gen_pcs = torch.load(output_name)
     #gen_pcs = gen_pcs['ref'] # Added by Nicolás : Comment when generate samples
     if gen_pcs.shape[1] > ref_pcs.shape[1]:
@@ -270,8 +272,14 @@ def compute_score(output_name, ref_name, batch_size_test=256, device_str='cuda',
         print_kwargs['dataset'] = print_kwargs.get('dataset',
                                                    '')+'-normbox'
     else:
+        # Added by Nicolas
+        ref_pcs = ref_pcs.to(device)
+        gen_pcs = gen_pcs.to(device)
+        s_pcs = s_pcs.to(device)
+        m_pcs = m_pcs.to(device)
+
         ref_pcs = ref_pcs * s_pcs + m_pcs
-        gen_pcs = gen_pcs * s_pcs + m_pcs
+        #gen_pcs = gen_pcs * s_pcs + m_pcs
     # visualize first few samples:
     if VIS:
         if exp is not None:

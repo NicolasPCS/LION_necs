@@ -44,7 +44,7 @@ class Trainer(BaseTrainer):
             logger.info('Init GradScaler!')
             self.grad_scalar = GradScaler(2**10, enabled=True)
 
-        self.model = self.build_model().to(device)
+        self.model = self.build_model().to(device) 
         if len(self.cfg.sde.vae_checkpoint):
             logger.info('Load vae_checkpoint: {}', self.cfg.sde.vae_checkpoint)
             self.model.load_state_dict(

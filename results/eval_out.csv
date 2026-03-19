@@ -1,2 +1,24 @@
 Dataset  	Model              	reported                   	  MMD-CDx0.001↓	  MMD-EMDx0.01↓	  COV-CD%↑	  COV-EMD%↑	  1-NNA-CD%↓	  1-NNA-EMD%↓	  JSD↓	url
 airplane 	c80834hs1H47de2diet	S563kE6.0k-ref_val_airplane	         3.2815	         0.9349	      7.16	      26.67	         100	        99.63	  0.32
+Dataset  	Model              	reported                    	  MMD-CDx0.001↓	  MMD-EMDx0.01↓	  COV-CD%↑	  COV-EMD%↑	  1-NNA-CD%↓	  1-NNA-EMD%↓	  JSD↓	url
+airplane 	4d70adhs1H05862diet	S1127kE8.0k-ref_val_airplane	         3.3431	          0.937	      6.67	      26.17	         100	        99.63	  0.32
+Dataset  	Model  	  MMD-CDx0.001↓	  MMD-EMDx0.01↓	  COV-CD%↑	  COV-EMD%↑	  1-NNA-CD%↓	  1-NNA-EMD%↓	  JSD↓	url
+-normbox 	       	         0.2794	         0.6839	      35.8	      32.84	       79.73	        88.75	  0.08
+Dataset  	Model  	  MMD-CDx0.001↓	  MMD-EMDx0.01↓	  COV-CD%↑	  COV-EMD%↑	  1-NNA-CD%↓	  1-NNA-EMD%↓	  JSD↓	url
+-normbox 	       	          0.282	         0.6928	     41.73	      33.83	        77.5	        89.49	  0.07
+Dataset  	Model  	  MMD-CDx0.001↓	  MMD-EMDx0.01↓	  COV-CD%↑	  COV-EMD%↑	  1-NNA-CD%↓	  1-NNA-EMD%↓	  JSD↓	url
+-normbox 	       	         0.2351	         0.4313	     44.06	      38.37	       80.94	        83.54	  0.07
+Dataset  	Model  	  MMD-CDx0.001↓	  MMD-EMDx0.01↓	  COV-CD%↑	  COV-EMD%↑	  1-NNA-CD%↓	  1-NNA-EMD%↓	  JSD↓	url
+         	       	           0.37	          0.048	      0.25	       0.25	         100	          100	  0.26
+Dataset  	Model  	  MMD-CDx0.001↓	  MMD-EMDx0.01↓	  COV-CD%↑	  COV-EMD%↑	  1-NNA-CD%↓	  1-NNA-EMD%↓	  JSD↓	url
+-normbox 	       	              0	         0.0026	       100	        100	           0	            0	     0
+Dataset  	Model  	  MMD-CDx0.001↓	  MMD-EMDx0.01↓	  COV-CD%↑	  COV-EMD%↑	  1-NNA-CD%↓	  1-NNA-EMD%↓	  JSD↓	url
+-normbox 	       	              0	         0.0026	       100	        100	           0	            0	     0
+Dataset  	Model  	  MMD-CDx0.001↓	  MMD-EMDx0.01↓	  COV-CD%↑	  COV-EMD%↑	  1-NNA-CD%↓	  1-NNA-EMD%↓	  JSD↓	url
+-normbox 	       	         0.2505	         0.6423	     41.58	      25.25	        87.5	        96.04	  0.09
+Dataset  	Model  	  MMD-CDx0.001↓	  MMD-EMDx0.01↓	  COV-CD%↑	  COV-EMD%↑	  1-NNA-CD%↓	  1-NNA-EMD%↓	  JSD↓	url
+-normbox 	       	         0.2818	         0.4662	     40.35	      39.11	       79.58	        83.66	   0.1
+Dataset  	Model  	  MMD-CDx0.001↓	  MMD-EMDx0.01↓	  COV-CD%↑	  COV-EMD%↑	  1-NNA-CD%↓	  1-NNA-EMD%↓	  JSD↓	url
+-normbox 	       	              0	         0.0026	       100	        100	           0	            0	     0
+Dataset  	Model  	  MMD-CDx0.001↓	  MMD-EMDx0.01↓	  COV-CD%↑	  COV-EMD%↑	  1-NNA-CD%↓	  1-NNA-EMD%↓	  JSD↓	url
+         	       	              0	         0.0072	       100	      93.81	           0	         3.84	     0

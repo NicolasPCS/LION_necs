@@ -27,7 +27,7 @@ class Model(nn.Module):
         
         self.num_points = args.data.tr_max_sample_points
         # ---- global ---- #
-        # build encoder  
+        # build encoder 
         self.style_encoder = import_model(args.latent_pts.style_encoder)(
             zdim=args.latent_pts.style_dim, 
             input_dim=self.input_dim, 
@@ -93,6 +93,47 @@ class Model(nn.Module):
             return all_eps, all_log_q, latent_list, cls_emb 
         else:
             return all_eps, all_log_q, latent_list
+    
+    # TODO: Return latents
+    @torch.no_grad()
+    def get_latents(self, x, class_label=None):
+        batch_size, _, point_dim = x.size()
+        assert(x.shape[2] == self.input_dim), f'expect input in ' \
+            f'[B,Npoint,PointDim={self.input_dim}], get: {x.shape}'
+        x_0_target = x 
+        latent_list = []
+        all_eps = [] 
+        all_log_q = []
+        if self.args.data.cond_on_cat:
+            assert(class_label is not None), f'require class label input for cond on cat'
+            cls_emb = self.class_embedding(class_label) 
+            enc_input = x, cls_emb 
+        else: # this
+            enc_input = x # Encoder input
+
+        # ---- global style encoder ---- #
+        z = self.style_encoder(enc_input) # 'models.shapelatent_modules.PointNetPlusEncoder'
+        z_mu, z_sigma = z['mu_1d'], z['sigma_1d'] # log_sigma - Comes from PointNet++
+        dist = Normal(mu=z_mu, log_sigma=z_sigma)  # (B, F) - Normal distribution
+        z_global = dist.sample()[0] # Generate a random sample ------------------- GLOBAL SHAPE LATENT
+        all_eps.append(z_global) 
+        all_log_q.append(dist.log_p(z_global)) 
+        latent_list.append( [z_global, z_mu, z_sigma] )
+
+        # ---- original encoder ---- #
+        style = z_global  # torch.cat([z_global, cls_emb], dim=1) if self.args.data.cond_on_cat else z_global 
+        style = self.style_mlp(style) if self.style_mlp is not None else style # In this case style
+        z = self.encoder([x, style]) # 'models.latent_points_ada.PointTransPVC'
+        z_mu, z_sigma = z['mu_1d'], z['sigma_1d']
+        z_sigma = z_sigma - self.args.shapelatent.log_sigma_offset 
+        dist = Normal(mu=z_mu, log_sigma=z_sigma)  # (B, F)
+        z_local = dist.sample()[0] 
+        all_eps.append(z_local) 
+        all_log_q.append(dist.log_p(z_local)) 
+        latent_list.append( [z_local, z_mu, z_sigma] )
+        all_eps = self.compose_eps(all_eps) 
+        
+        return latent_list
 
     def compose_eps(self, all_eps):
         return torch.cat(all_eps, dim=1) #  style: [B,D1], latent pts: [B,ND2]

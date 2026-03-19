@@ -4,7 +4,7 @@ import torch
 import numpy as np
 
 input_path = "/home/ncaytuir/data-local/exp/0604/airplane/7807deh_train_lion_B10/eval_408objects/complete_point_clouds"
-output_path = "/home/ncaytuir/data-local/exp/0604/airplane/7807deh_train_lion_B10/eval_408objects/complete_point_clouds/complete_generated_shapes.pt"
+output_path = "/home/ncaytuir/data-local/LION_necs/MyScripts/PTs_and_PTHs"
 
 # Listar y ordenar archivos .npy
 file_list = sorted([f for f in os.listdir(input_path) if f.endswith(".npy")]) #[:250] # 250 culd be adjusted
