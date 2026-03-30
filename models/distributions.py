@@ -10,8 +10,8 @@ import numpy as np
 
 @torch.jit.script
 def sample_normal_jit(mu, sigma):
-    rho = mu.mul(0).normal_()
-    z = rho.mul_(sigma).add_(mu)
+    rho = mu.mul(0).normal_() # nomal_() produces random values from a normal distribution
+    z = rho.mul_(sigma).add_(mu) # z = ρ ⋅ σ + μ
     return z, rho
 
 class Normal:

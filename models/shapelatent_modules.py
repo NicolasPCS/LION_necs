@@ -49,6 +49,6 @@ class PointNetPlusEncoder(nn.Module):
         features = self.mlp(features)
         mu_1d, sigma_1d = features[:, :self.zdim], features[:, self.zdim:]
         output.update({'mu_1d': mu_1d, 'sigma_1d': sigma_1d})
-        return output 
+        return output
 
 

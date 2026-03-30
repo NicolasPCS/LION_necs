@@ -94,7 +94,6 @@ class Model(nn.Module):
         else:
             return all_eps, all_log_q, latent_list
     
-    # TODO: Return latents
     @torch.no_grad()
     def get_latents(self, x, class_label=None):
         batch_size, _, point_dim = x.size()
@@ -113,8 +112,12 @@ class Model(nn.Module):
 
         # ---- global style encoder ---- #
         z = self.style_encoder(enc_input) # 'models.shapelatent_modules.PointNetPlusEncoder'
+        # NOTE z_mu and z_sigma are always the same
         z_mu, z_sigma = z['mu_1d'], z['sigma_1d'] # log_sigma - Comes from PointNet++
+        #print("z_mu", torch.mean(z_mu))
+        #print("z_sigma", torch.mean(z_sigma))
         dist = Normal(mu=z_mu, log_sigma=z_sigma)  # (B, F) - Normal distribution
+        # NOTE This originates the variation
         z_global = dist.sample()[0] # Generate a random sample ------------------- GLOBAL SHAPE LATENT
         all_eps.append(z_global) 
         all_log_q.append(dist.log_p(z_global)) 
@@ -134,6 +137,37 @@ class Model(nn.Module):
         all_eps = self.compose_eps(all_eps) 
         
         return latent_list
+    
+    @torch.no_grad()
+    def get_latents_mu(self, x, class_label=None):
+        batch_size, _, point_dim = x.size()
+        assert(x.shape[2] == self.input_dim), f'expect input in ' \
+            f'[B,Npoint,PointDim={self.input_dim}], get: {x.shape}'
+        x_0_target = x 
+        latent_list = []
+        all_eps = [] 
+        all_log_q = []
+        if self.args.data.cond_on_cat:
+            assert(class_label is not None), f'require class label input for cond on cat'
+            cls_emb = self.class_embedding(class_label) 
+            enc_input = x, cls_emb 
+        else: # this
+            enc_input = x # Encoder input
+
+        # ---- global style encoder ---- #
+        z = self.style_encoder(enc_input) # 'models.shapelatent_modules.PointNetPlusEncoder'
+        # NOTE z_mu and z_sigma are always the same
+        z_mu_z_global, z_sigma = z['mu_1d'], z['sigma_1d'] # log_sigma - Comes from PointNet++
+        #print("z_mu_z_global", torch.mean(z_mu_z_global))
+        #print("z_sigma", torch.mean(z_sigma))
+        dist = Normal(mu=z_mu_z_global, log_sigma=z_sigma)  # (B, F) - Normal distribution
+        # NOTE This originates the variation
+        z_global = dist.sample()[0] # Generate a random sample ------------------- GLOBAL SHAPE LATENT
+        all_eps.append(z_global) 
+        all_log_q.append(dist.log_p(z_global)) 
+        latent_list.append( [z_global, z_mu_z_global, z_sigma] )
+        
+        return z_mu_z_global
 
     def compose_eps(self, all_eps):
         return torch.cat(all_eps, dim=1) #  style: [B,D1], latent pts: [B,ND2]
