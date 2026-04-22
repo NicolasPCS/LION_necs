@@ -37,8 +37,29 @@
 #checkpoint="/home/ncaytuir/data-local/exp/1006/airplane/824c5bh_train_lion_B10/checkpoints/epoch_5999_iters_563999.pt"
 
 # Prior
-python train_dist.py --skip_nll 1 --eval_generation --pretrained /home/isipiran/exp/0411/airplane/9e2642h_train_lion_B10/checkpoints/epoch_17999_iters_1691999.pt ddpm.model_var_type "fixedlarge" data.batch_size_test 200 ddpm.ema 1 num_val_samples 3
+# Airplane
+python train_dist.py --skip_nll 1 --eval_generation --pretrained /home/ncaytuir/exp/patagon_priors/airplane/checkpoints/epoch_3999_iters_375999.pt ddpm.model_var_type "fixedlarge" data.batch_size_test 200 ddpm.ema 1 num_val_samples 3
 
-python train_dist.py --skip_nll 1 --eval_generation --pretrained /home/isipiran/exp/0406/car/f64befh_train_lion_B10/checkpoints/epoch_17999_iters_881999.pt ddpm.model_var_type "fixedlarge" data.batch_size_test 200 ddpm.ema 1 num_val_samples 3
+python train_dist.py --skip_nll 1 --eval_generation --pretrained /home/ncaytuir/exp/patagon_priors/airplane/checkpoints/epoch_6999_iters_657999.pt ddpm.model_var_type "fixedlarge" data.batch_size_test 200 ddpm.ema 1 num_val_samples 3
 
-python train_dist.py --skip_nll 1 --eval_generation --pretrained /home/isipiran/exp/0412/chair/7d8498h_train_lion_B10/checkpoints/epoch_17999_iters_1655999.pt ddpm.model_var_type "fixedlarge" data.batch_size_test 200 ddpm.ema 1 num_val_samples 3
+python train_dist.py --skip_nll 1 --eval_generation --pretrained /home/ncaytuir/exp/patagon_priors/airplane/checkpoints/epoch_10999_iters_1033999.pt ddpm.model_var_type "fixedlarge" data.batch_size_test 200 ddpm.ema 1 num_val_samples 3
+
+python train_dist.py --skip_nll 1 --eval_generation --pretrained /home/ncaytuir/exp/patagon_priors/airplane/checkpoints/epoch_14999_iters_1409999.pt ddpm.model_var_type "fixedlarge" data.batch_size_test 200 ddpm.ema 1 num_val_samples 3
+
+# Car
+python train_dist.py --skip_nll 1 --eval_generation --pretrained /home/ncaytuir/exp/patagon_priors/car/checkpoints/epoch_3999_iters_195999.pt ddpm.model_var_type "fixedlarge" data.batch_size_test 200 ddpm.ema 1 num_val_samples 3
+
+python train_dist.py --skip_nll 1 --eval_generation --pretrained /home/ncaytuir/exp/patagon_priors/car/checkpoints/epoch_6999_iters_342999.pt ddpm.model_var_type "fixedlarge" data.batch_size_test 200 ddpm.ema 1 num_val_samples 3
+
+python train_dist.py --skip_nll 1 --eval_generation --pretrained /home/ncaytuir/exp/patagon_priors/car/checkpoints/epoch_10999_iters_538999.pt ddpm.model_var_type "fixedlarge" data.batch_size_test 200 ddpm.ema 1 num_val_samples 3
+
+python train_dist.py --skip_nll 1 --eval_generation --pretrained /home/ncaytuir/exp/patagon_priors/car/checkpoints/epoch_14999_iters_734999.pt ddpm.model_var_type "fixedlarge" data.batch_size_test 200 ddpm.ema 1 num_val_samples 3
+
+# Chair
+python train_dist.py --skip_nll 1 --eval_generation --pretrained /home/ncaytuir/exp/patagon_priors/chair/checkpoints/epoch_3999_iters_367999.pt ddpm.model_var_type "fixedlarge" data.batch_size_test 200 ddpm.ema 1 num_val_samples 3
+
+python train_dist.py --skip_nll 1 --eval_generation --pretrained /home/ncaytuir/exp/patagon_priors/chair/checkpoints/epoch_6999_iters_643999.pt ddpm.model_var_type "fixedlarge" data.batch_size_test 200 ddpm.ema 1 num_val_samples 3
+
+python train_dist.py --skip_nll 1 --eval_generation --pretrained /home/ncaytuir/exp/patagon_priors/chair/checkpoints/epoch_10999_iters_1011999.pt ddpm.model_var_type "fixedlarge" data.batch_size_test 200 ddpm.ema 1 num_val_samples 3
+
+python train_dist.py --skip_nll 1 --eval_generation --pretrained /home/ncaytuir/exp/patagon_priors/chair/checkpoints/epoch_14999_iters_1379999.pt ddpm.model_var_type "fixedlarge" data.batch_size_test 200 ddpm.ema 1 num_val_samples 3
