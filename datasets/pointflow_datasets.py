@@ -8,7 +8,6 @@
 
 """ copied and modified from https://github.com/stevenygd/PointFlow/blob/master/datasets.py """
 import os
-import open3d as o3d
 import time
 import torch
 import numpy as np
@@ -205,7 +204,7 @@ class ShapeNet15kPointClouds(Dataset):
         self.normalize_per_shape = normalize_per_shape
         self.normalize_std_per_axis = normalize_std_per_axis
         self.recenter_per_shape = recenter_per_shape
-        if self.normalize_shape_box:  # per shape normalization
+        if self.normalize_shape_box:  # per shape normalization ----------- False
             B, N = self.all_points.shape[:2]
             self.all_points_mean = (  # B,1,3
                 (np.amax(self.all_points, axis=1)).reshape(B, 1, input_dim) +
@@ -214,7 +213,7 @@ class ShapeNet15kPointClouds(Dataset):
                 ((np.amax(self.all_points, axis=1)).reshape(B, 1, input_dim) -
                  (np.amin(self.all_points, axis=1)).reshape(B, 1, input_dim)),
                 axis=-1).reshape(B, 1, 1) / 2
-        elif self.normalize_per_shape:  # per shape normalization
+        elif self.normalize_per_shape:  # per shape normalization ----------- False
             B, N = self.all_points.shape[:2]
             self.all_points_mean = self.all_points.mean(axis=1).reshape(
                 B, 1, input_dim)
@@ -230,23 +229,21 @@ class ShapeNet15kPointClouds(Dataset):
             # using loaded dataset stats
             self.all_points_mean = all_points_mean
             self.all_points_std = all_points_std
-        elif self.recenter_per_shape:  # per shape center
+        elif self.recenter_per_shape:  # per shape center ----------- False
             # TODO: bounding box scale at the large dim and center
             B, N = self.all_points.shape[:2]
             self.all_points_mean = (
                 (np.amax(self.all_points, axis=1)).reshape(B, 1, input_dim) +
-                (np.amin(self.all_points, axis=1)).reshape(B, 1,
-                                                           input_dim)) / 2
+                (np.amin(self.all_points, axis=1)).reshape(B, 1, input_dim)) / 2
             self.all_points_std = np.amax(
                 ((np.amax(self.all_points, axis=1)).reshape(B, 1, input_dim) -
-                 (np.amin(self.all_points, axis=1)).reshape(B, 1, input_dim)),
-                axis=-1).reshape(B, 1, 1) / 2
+                 (np.amin(self.all_points, axis=1)).reshape(B, 1, input_dim)), axis=-1).reshape(B, 1, 1) / 2
         # else:  # normalize across the dataset
-        elif normalize_global:  # normalize across the dataset
+        elif normalize_global:  # normalize across the dataset ----------- True
             self.all_points_mean = self.all_points.reshape(
                 -1, input_dim).mean(axis=0).reshape(1, 1, input_dim)
 
-            if normalize_std_per_axis:
+            if normalize_std_per_axis: # ----------- False
                 self.all_points_std = self.all_points.reshape(
                     -1, input_dim).std(axis=0).reshape(1, 1, input_dim)
             else:
@@ -258,8 +255,7 @@ class ShapeNet15kPointClouds(Dataset):
                         self.all_points_std.reshape(-1))
         else:
             raise NotImplementedError('No Normalization')
-        self.all_points = (self.all_points - self.all_points_mean) / \
-            self.all_points_std
+        self.all_points = (self.all_points - self.all_points_mean) / self.all_points_std
         logger.info('[DATA] shape={}, all_points_mean:={}, std={}, max={:.3f}, min={:.3f}; num-pts={}',
                     self.all_points.shape,
                     self.all_points_mean.shape, self.all_points_std.shape,

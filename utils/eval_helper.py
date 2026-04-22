@@ -8,7 +8,6 @@
 import os
 import json
 from comet_ml import Experiment, OfflineExperiment
-## import open3d as o3d
 import time
 import numpy as np
 import torch

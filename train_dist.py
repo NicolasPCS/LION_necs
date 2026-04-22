@@ -87,13 +87,21 @@ def main(args, config):
 
         save_file = None
         if not args.skip_nll:
+            logger.info("[DEBUG] Esto 1")
             trainer.eval_nll(trainer.step, ntest=args.ntest, save_file=True)
         logger.info('save as : {}', save_file)
         # vis sampled output
         if not args.skip_sample:
-            trainer.vis_sample(num_vis=8, writer=trainer.writer,
+            logger.info("[DEBUG] Esto 2")
+            logger.info("[DEBUG] args.ntest:", args.ntest)
+            import inspect
+            actual_func = trainer.eval_sample.__wrapped__
+            ruta_real = inspect.getfile(actual_func)
+            logger.info(f"[DEBUG] La ruta REAL es: {ruta_real}")
+            logger.info(args)
+            """ trainer.vis_sample(num_vis=8, writer=trainer.writer,
                                step=trainer.step, include_pred_x0=False,
-                               save_file=save_file)
+                               save_file=save_file) """
             trainer.eval_sample(trainer.step)
         logger.info('done')
 
@@ -139,7 +147,7 @@ def get_args():
                         help='rank of process among all the processes')
     parser.add_argument('--num_process_per_node', type=int, default=1,
                         help='number of gpus')
-    parser.add_argument('--master_address', type=str, default='127.0.0.1',
+    parser.add_argument('--master_address', type=str, default='127.0.0.2',
                         help='address for master')
     parser.add_argument('--seed', type=int, default=1,
                         help='seed used for initialization')

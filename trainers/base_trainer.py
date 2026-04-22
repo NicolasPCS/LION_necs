@@ -382,11 +382,14 @@ class BaseTrainer(ABC):
         """ compute sample metric: MMD,COV,1-NNA  """
         writer = self.writer
         batch_size_test = self.cfg.data.batch_size_test
+        logger.info(f"[DEBUG] batch_size_test) {batch_size_test}")
         input_dim = self.cfg.ddpm.input_dim
         ddim_step = self.cfg.eval_ddim_step
         device = model_helper.get_device(self.model)
         test_loader = self.test_loader
+        logger.info(f"[DEBUG] test_loader) {len(test_loader)}")
         test_size = batch_size_test * len(test_loader)
+        logger.info(f"[DEBUG] test_size) {test_size}")
         sample_num_points = self.cfg.data.tr_max_sample_points
         cates = self.cfg.data.cates
         num_ref = get_ref_num(
@@ -407,8 +410,9 @@ class BaseTrainer(ABC):
             tag += 'diet'
         else:
             tag += 'ode%d' % self.cfg.sde.ode_sample
+        import random
         output_name = os.path.join(
-            self.cfg.save_dir, f'samples_{step}{tag}.pt')
+            self.cfg.save_dir, f'samples_{step}{tag}{random.randint(1, 20)}.pt')
         logger.info('batch_size_test={}, test_size={}, saved output: {} ',
                     batch_size_test, test_size, output_name)
         gen_pcs = []
@@ -444,14 +448,16 @@ class BaseTrainer(ABC):
 
         # ---- gen_pcs ---- #
         if True:
-            len_test_loader = num_ref // batch_size_test + 1
+            #len_test_loader = num_ref // batch_size_test + 1
+            len_test_loader = 4 + 1
+            logger.info(f"[DEBUG] len_test_loader) {len_test_loader}")
             if self.args.distributed:
                 num_gen_iter = max(1, len_test_loader // self.args.global_size)
                 if num_gen_iter * batch_size_test * self.args.global_size < num_ref:
                     num_gen_iter = num_gen_iter + 1
             else:
                 num_gen_iter = len_test_loader
-
+            logger.info(f"[DEBUG] num_gen_iter) {num_gen_iter}")
             index_start = 0
             logger.info('Rank={}, num_gen_iter: {}; num_ref={}, batch_size_test={}',
                         self.args.global_rank, num_gen_iter, num_ref, batch_size_test)
@@ -490,10 +496,11 @@ class BaseTrainer(ABC):
         logger.info('save as %s' % output_name)
         if self.args.global_rank == 0:
             torch.save(gen_pcs, output_name)
+            return
         else:
             logger.info('return for rank {}', self.args.global_rank)
             return  # only do eval on one gpu
-        if writer is not None:
+        """ if writer is not None:
             img_list = []
             for i in range(1):
                 gen_list = [gen_pcs[k] for k in range(len(gen_pcs))][:8]
@@ -523,18 +530,18 @@ class BaseTrainer(ABC):
                         'step': step_str,
                         'epoch': epoch_str+'-'+os.path.basename(ref).split('.')[0]}
         self.model = self.model.cpu()
-        torch.cuda.empty_cache()
+        torch.cuda.empty_cache() """
         # -- compute the generation metric -- #
-        results = compute_score(output_name, ref_name=ref,
+        """ results = compute_score(output_name, ref_name=ref,
                                 writer=writer,
                                 batch_size_test=min(
                                     5, self.cfg.data.batch_size_test),
                                 norm_box=norm_box,
-                                **print_kwargs)
+                                **print_kwargs) """
 
         self.model = self.model.to(device)
         # ---- write to logger ---- #
-        writer.add_scalar('test/Coverage_CD', results['lgan_cov-CD'], step)
+        """ writer.add_scalar('test/Coverage_CD', results['lgan_cov-CD'], step)
         writer.add_scalar('test/Coverage_EMD', results['lgan_cov-EMD'], step)
         writer.add_scalar('test/MMD_CD', results['lgan_mmd-CD'], step)
         writer.add_scalar('test/MMD_EMD', results['lgan_mmd-EMD'], step)
@@ -548,9 +555,9 @@ class BaseTrainer(ABC):
             results['lgan_cov-CD'], results['lgan_cov-EMD'])
         msg += '\n[Test] 1NN-Accur | CD %.6f | EMD %.6f' % (
             results['1-NN-CD-acc'], results['1-NN-EMD-acc'])
-        msg += '\n[Test] JsnShnDis | %.6f ' % (results['jsd'])
+        msg += '\n[Test] JsnShnDis | %.6f ' % (results['jsd']) """
 
-        logger.info(msg)
+        """ logger.info(msg)
         with open(os.path.join(self.cfg.save_dir, 'eval_out.txt'), 'a') as f:
             f.write(shape_str+'\n')
             f.write(msg+'\n')
@@ -558,7 +565,7 @@ class BaseTrainer(ABC):
         msg = print_results(results, **print_kwargs)
         with open(os.path.join(self.cfg.save_dir, 'eval_out.txt'), 'a') as f:
             f.write(msg+'\n')
-        logger.info('\n\t' + writer.url)
+        logger.info('\n\t' + writer.url) """
 
     def vis_sample(self, writer, num_vis=None, step=0, include_pred_x0=True,
                    save_file=None):
