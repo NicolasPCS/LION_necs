@@ -14,3 +14,4 @@ data/*
 PRUEBAS/*
 datasets/test_data
 datasets/test_data_splitted_objects
+third_party/*
